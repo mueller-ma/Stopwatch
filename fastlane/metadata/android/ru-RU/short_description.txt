@@ -1,1 +1,1 @@
-Stopwatch as quick tile
+Таймер как быстрая плитка
