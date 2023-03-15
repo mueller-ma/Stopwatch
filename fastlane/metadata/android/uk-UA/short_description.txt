@@ -1,1 +1,1 @@
-Stopwatch as quick tile
+Секундомір з швидкою плиткою
