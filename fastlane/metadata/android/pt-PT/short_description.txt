@@ -1,1 +1,1 @@
-Stopwatch as quick tile
+Cronômetro como bloco rápido
