@@ -8,7 +8,7 @@ This Android app provides a stop watch as quick tile. There's no launcher icon, 
 
 The notification is required for technical reasons. I recommend to mute notifications of this app.
 
-<!--[<img src="assets/get-it-on-fdroid.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/de/packages/com.github.muellerma.coffee/)-->
+[<img src="assets/get-it-on-fdroid.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/com.github.muellerma.stopwatch/)
 
 <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" alt="Screenshot" width=200px>
 
