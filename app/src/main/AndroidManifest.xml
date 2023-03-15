@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <application
+            android:allowBackup="false"
+            android:label="@string/app_name"
+            android:icon="@mipmap/ic_launcher"
+            android:supportsRtl="true"
+            android:theme="@style/Theme.Stopwatch"
+            android:name=".StopwatchApp">
+
+        <service
+                android:name=".StopwatchTile"
+                android:icon="@drawable/baseline_timer_24"
+                android:label="@string/app_name"
+                android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+                android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+            <meta-data
+                    android:name="android.service.quicksettings.ACTIVE_TILE"
+                    android:value="true" />
+            <meta-data
+                    android:name="android.service.quicksettings.TOGGLEABLE_TILE"
+                    android:value="true" />
+        </service>
+
+        <service
+                android:name=".StopwatchService"
+                android:enabled="true"
+                android:exported="false" />
+    </application>
+
+</manifest>

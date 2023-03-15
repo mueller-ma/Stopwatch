@@ -1,0 +1,3 @@
+<resources>
+    <style name="Theme.Stopwatch" parent="Theme.AppCompat.DayNight.DarkActionBar" />
+</resources>
