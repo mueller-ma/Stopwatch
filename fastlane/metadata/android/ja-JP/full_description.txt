@@ -1,3 +1,3 @@
-This app provides a stop watch as quick tile. There's no launcher icon, just the tile.
+このアプリはタイルの速いストップウォッチを提供します。 タイルだけのランチャーアイコンはありません。
 
-The notification is required for technical reasons. I recommend to mute notifications of this app.
+技術的な理由で通知が必要です。 このアプリの通知をミュートすることをお勧めします。
