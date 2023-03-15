@@ -1,0 +1,3 @@
+Ta aplikacja zapewnia stop watch jako szybki płytek. Nie ma ikony launchera, po prostu kafelka.
+
+Powiadomienie jest wymagane ze względów technicznych. Zalecam wyciszenie powiadomień o tej aplikacji.

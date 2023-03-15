@@ -1,0 +1,3 @@
+Tato aplikace poskytuje stopky jako rychlý dlaždic. Neexistuje žádná ikona spouštěče, jen dlaždice.
+
+Oznámení je vyžadováno z technických důvodů. Doporučuji ztlumit oznámení této aplikace.

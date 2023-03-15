@@ -1,0 +1,3 @@
+Cette application fournit une montre d'arrêt comme tuile rapide. Il n'y a pas d'icône de lanceur, juste la tuile.
+
+La notification est requise pour des raisons techniques. Je recommande de désactiver les notifications de cette application.

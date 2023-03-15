@@ -1,0 +1,3 @@
+Esta aplicación proporciona un reloj de parada como azulejo rápido. No hay ningún icono del lanzador, sólo el azulejo.
+
+La notificación es necesaria por razones técnicas. Recomiendo silenciar las notificaciones de esta aplicación.

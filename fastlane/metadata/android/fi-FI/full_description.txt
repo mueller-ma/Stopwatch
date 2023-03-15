@@ -1,0 +1,3 @@
+Tämä sovellus tarjoaa stop watch as quick tile. (Automatic Copy) Käynnistäjän kuvaketta ei ole, vain levy.
+
+Ilmoitus on tehtävä teknisistä syistä. Suosittelen hiljentämään tämän sovelluksen ilmoitukset.

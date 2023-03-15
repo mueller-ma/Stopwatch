@@ -1,0 +1,3 @@
+Denna app ger en stoppklocka som snabbkakel. Det finns ingen launcher ikon, bara plattan.
+
+Anmälan krävs av tekniska skäl. Jag rekommenderar att stänga av aviseringar från den här appen.

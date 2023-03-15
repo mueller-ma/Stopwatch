@@ -1,0 +1,3 @@
+Questa app fornisce uno stop watch come tile veloce. Non c'è nessuna icona di lancio, solo la piastrella.
+
+La notifica è necessaria per motivi tecnici. Raccomando di disattivare le notifiche di questa app.

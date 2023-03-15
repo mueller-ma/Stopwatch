@@ -1,0 +1,3 @@
+Această aplicație oferă un ceas de stop ca o ţiglă rapidă. Nu există nici o pictogramă de lansator, ci doar ţiglă.
+
+Notificarea este necesară din motive tehnice. Vă recomand să dezactivați notificările acestei aplicații.

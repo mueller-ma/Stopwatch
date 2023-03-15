@@ -1,0 +1,3 @@
+Diese App bietet eine Stoppuhr als Schnellkachel. Es gibt kein Launcher-Symbol, nur die Kachel.
+
+Die Benachrichtigung ist aus technischen Gründen erforderlich. Ich empfehle, die Benachrichtigungen dieser App zu stummschalten.

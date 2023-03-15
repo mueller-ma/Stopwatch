@@ -1,0 +1,3 @@
+Este aplicativo apresenta um ponto de parada como um botão rápido. Não há ícone no lançador, apenas o botão.
+
+A notificação é necessária por razões técnicas. Recomendo silenciar notificações deste app.

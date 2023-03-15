@@ -1,0 +1,3 @@
+Denne app giver et stop ur som hurtig flise. Der er ingen launcher ikon, bare flisen.
+
+Meddelelsen er nødvendig af tekniske årsager. Jeg anbefaler at slå notifikationer fra denne app.
