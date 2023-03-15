@@ -1,1 +1,1 @@
-Stopwatch as quick tile
+クイックタイルとして停止する
