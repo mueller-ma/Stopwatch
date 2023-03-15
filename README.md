@@ -2,7 +2,7 @@
 
 [![Build App](https://github.com/mueller-ma/Stopwatch/actions/workflows/build.yml/badge.svg)](https://github.com/mueller-ma/Stopwatch/actions/workflows/build.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/mueller-ma/stopwatch/badge)](https://www.codefactor.io/repository/github/mueller-ma/stopwatch)
-<!--[![Crowdin](https://badges.crowdin.net/coffee-app/localized.svg)](https://crowdin.com/project/coffee-app)-->
+[![Crowdin](https://badges.crowdin.net/stopwatch/localized.svg)](https://crowdin.com/project/stopwatch)
 
 This Android app provides a stop watch as quick tile. There's no launcher icon, just the tile.
 
@@ -19,12 +19,9 @@ From my point of view this app is feature complete. I won't add new major featur
 * Merge new translations
 * Fix bugs
 
-<!-- ## Translations
+## Translations
 
-App strings and the app store description can be translated via Crowdin: https://crowdin.com/project/coffee-app
-
-Translations have to be approved before being merged into the app. To become a translator with approval rights or to request a new language, please [poke me on Crowdin](https://crowdin.com/profile/mueller-ma) or open an issue here on GitHub. 
--->
+App strings and the app store description can be translated via Crowdin: https://crowdin.com/project/stopwatch
 
 ## Credits
 
