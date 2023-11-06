@@ -31,6 +31,7 @@
 
         <service
                 android:name=".StopwatchService"
+                android:foregroundServiceType="shortService"
                 android:enabled="true"
                 android:exported="false" />
     </application>
