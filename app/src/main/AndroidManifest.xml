@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
@@ -31,9 +32,13 @@
 
         <service
                 android:name=".StopwatchService"
-                android:foregroundServiceType="shortService"
+                android:foregroundServiceType="specialUse"
                 android:enabled="true"
-                android:exported="false" />
+                android:exported="false" >
+            <property
+                    android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                    android:value="maintain stopwatch tile active and visible until stopped by user" />
+        </service>
     </application>
 
 </manifest>
