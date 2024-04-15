@@ -2,6 +2,7 @@ package com.github.muellerma.stopwatch
 
 import android.content.ComponentName
 import android.content.Context
+import android.os.Build
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import android.util.Log
@@ -14,6 +15,7 @@ class StopwatchTile : TileService(), CoroutineScope {
     override val coroutineContext = Job()
     private var newMark: Monotonic.ValueTimeMark = Monotonic.markNow()
     private var tapCount: Int = 0
+    private var lastSeconds: Long = 0
 
     override fun onClick() {
         Log.d(TAG, "onClick()")
@@ -67,13 +69,31 @@ class StopwatchTile : TileService(), CoroutineScope {
             newMark = Monotonic.markNow()
             val lastMark: Monotonic.ValueTimeMark = newMark
             Log.d(TAG, "1- tapCount = $tapCount, newMark = $newMark, lastMark = $lastMark")
-            //wait the time range and check if there was another tap since then
-            delay(TIMERANGE)
-            Log.d(TAG, "2- tapCount = $tapCount, newMark = $newMark, lastMark = $lastMark")
-            if (newMark == lastMark) {
-                actOnTap()
-                //reset tap count for next loop
-                tapCount = 0
+            when (tapCount) {
+                1 -> { //make sure there isnt a second tap before acting
+                    //wait the time range and check if there was another tap since then
+                    delay(TIMERANGE)
+                    Log.d(TAG, "2- tapCount = $tapCount, newMark = $newMark, lastMark = $lastMark")
+                    if (newMark == lastMark) {
+                        actOnTap()
+                        //reset tap count for next loop
+                        tapCount = 0
+                    }
+                }
+                2 -> { //act on the second tap
+                    val currentStatus = (application as StopwatchApp).lastStatusUpdate
+                    //remember seconds where stopped for subtitle
+                    if (currentStatus is ServiceStatus.Paused) {
+                        lastSeconds = currentStatus.seconds
+                    } else if (currentStatus is ServiceStatus.Running) {
+                        lastSeconds = currentStatus.seconds
+                    }
+                    actOnTap()
+                    //reset tap count for next loop
+                    delay(TIMERANGE)
+                    tapCount = 0
+                }
+                else -> {}
             }
         }
     }
@@ -87,7 +107,7 @@ class StopwatchTile : TileService(), CoroutineScope {
             } else {
                 StopwatchService.changeState(applicationContext, PlayFlag.PAUSE)
             }
-        } else if (tapCount >= 2) { //reset
+        } else { //reset
             if (currentStatus !is ServiceStatus.Stopped) {
                 StopwatchService.changeState(applicationContext, PlayFlag.RESET)
             }
@@ -116,9 +136,23 @@ class StopwatchTile : TileService(), CoroutineScope {
         when (currentStatus) {
             is ServiceStatus.Stopped -> {
                 tile.label = getString(R.string.app_name)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    val formattedLastSeconds = lastSeconds.toFormattedTime()
+                    tile.subtitle = "Last: $formattedLastSeconds"
+                }
             }
-            is ServiceStatus.Paused -> { tile.label = currentStatus.seconds.toFormattedTime()}
-            is ServiceStatus.Running -> { tile.label = currentStatus.seconds.toFormattedTime()}
+            is ServiceStatus.Paused -> {
+                tile.label = currentStatus.seconds.toFormattedTime()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    tile.subtitle = "Paused"
+                }
+            }
+            is ServiceStatus.Running -> {
+                tile.label = currentStatus.seconds.toFormattedTime()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    tile.subtitle = "Running"
+                }
+            }
         }
         tile.updateTile()
     }
