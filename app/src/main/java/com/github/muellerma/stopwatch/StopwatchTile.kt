@@ -143,15 +143,9 @@ class StopwatchTile : TileService(), CoroutineScope {
             }
             is ServiceStatus.Paused -> {
                 tile.label = currentStatus.seconds.toFormattedTime()
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    tile.subtitle = "Paused"
-                }
             }
             is ServiceStatus.Running -> {
                 tile.label = currentStatus.seconds.toFormattedTime()
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    tile.subtitle = "Running"
-                }
             }
         }
         tile.updateTile()
