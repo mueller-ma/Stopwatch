@@ -110,6 +110,12 @@ class StopwatchTile : TileService(), CoroutineScope {
         } else { //reset
             if (currentStatus !is ServiceStatus.Stopped) {
                 StopwatchService.changeState(applicationContext, PlayFlag.RESET)
+            } else { //reset the subtitle
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    val tile = qsTile ?: return
+                    tile.subtitle = null
+                    tile.updateTile()
+                }
             }
         }
     }
@@ -143,9 +149,15 @@ class StopwatchTile : TileService(), CoroutineScope {
             }
             is ServiceStatus.Paused -> {
                 tile.label = currentStatus.seconds.toFormattedTime()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    tile.subtitle = null
+                }
             }
             is ServiceStatus.Running -> {
                 tile.label = currentStatus.seconds.toFormattedTime()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    tile.subtitle = null
+                }
             }
         }
         tile.updateTile()
