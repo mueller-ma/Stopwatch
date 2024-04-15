@@ -4,4 +4,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         tools:ignore="MissingTranslation, ExtraTranslation">
     <string name="app_name">Stopwatch</string>
+    <string name="history_here">history here</string>
+    <string name="all_the_histories">all the histories</string>
+    <string name="ok">OK</string>
 </resources>

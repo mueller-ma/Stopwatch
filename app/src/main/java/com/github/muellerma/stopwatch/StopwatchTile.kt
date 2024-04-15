@@ -9,6 +9,7 @@ import kotlinx.coroutines.*
 import kotlin.time.TimeSource.Monotonic
 
 private const val TIMERANGE: Long = 400
+
 class StopwatchTile : TileService(), CoroutineScope {
     override val coroutineContext = Job()
     private var newMark: Monotonic.ValueTimeMark = Monotonic.markNow()
@@ -17,17 +18,25 @@ class StopwatchTile : TileService(), CoroutineScope {
     override fun onClick() {
         Log.d(TAG, "onClick()")
         presetTileState() //for instant feedback
-        if (tapCount == 0) {
-            preStopRunning() //for time accuracy
-        }
+        preStopRunning() //for fluidity
         tapWaitOrAct()
     }
 
     private fun preStopRunning() {
         val currentStatus = (application as StopwatchApp).lastStatusUpdate
         Log.d(TAG, "preStopRunning(): currentStatus = $currentStatus")
-        if (currentStatus is ServiceStatus.Running) {
-            StopwatchService.changeState(applicationContext, PlayFlag.PREPAUSE)
+        when (tapCount) {
+            0 -> {
+                if (currentStatus is ServiceStatus.Running) {
+                    StopwatchService.changeState(applicationContext, PlayFlag.PREPAUSE)
+                }
+            }
+            1 -> {
+                if (currentStatus is ServiceStatus.Running) {
+                    StopwatchService.changeState(applicationContext, PlayFlag.PLAY)
+                }
+            }
+            else -> {}
         }
     }
 
@@ -35,24 +44,18 @@ class StopwatchTile : TileService(), CoroutineScope {
         val tile = qsTile ?: return
         val currentStatus = (application as StopwatchApp).lastStatusUpdate
         Log.d(TAG, "presetTileState(): currentStatus = $currentStatus")
-        if (tapCount == 0) {
-            //we might run or stop
-            when (currentStatus) {
-                is ServiceStatus.Stopped -> {
-                    tile.state = Tile.STATE_ACTIVE
-                }
-
-                is ServiceStatus.Paused -> {
-                    tile.state = Tile.STATE_ACTIVE
-                }
-
-                is ServiceStatus.Running -> {
-                    tile.state = Tile.STATE_INACTIVE
+        when (tapCount) {
+            0 -> { //we might run or stop
+                when (currentStatus) {
+                    is ServiceStatus.Stopped -> { tile.state = Tile.STATE_ACTIVE }
+                    is ServiceStatus.Paused -> { tile.state = Tile.STATE_ACTIVE }
+                    is ServiceStatus.Running -> { tile.state = Tile.STATE_INACTIVE }
                 }
             }
-        } else if (tapCount == 1) {
-            //we know we gonna reset
-            tile.state = Tile.STATE_INACTIVE
+            1 -> { //we know we gonna reset
+                tile.state = Tile.STATE_INACTIVE
+            }
+            else -> {}
         }
         tile.updateTile()
     }
@@ -84,12 +87,10 @@ class StopwatchTile : TileService(), CoroutineScope {
             } else {
                 StopwatchService.changeState(applicationContext, PlayFlag.PAUSE)
             }
-        } else if (tapCount <= 3) { //reset
+        } else if (tapCount >= 2) { //reset
             if (currentStatus !is ServiceStatus.Stopped) {
                 StopwatchService.changeState(applicationContext, PlayFlag.RESET)
             }
-        } else { //show history
-            return
         }
     }
 
@@ -101,7 +102,9 @@ class StopwatchTile : TileService(), CoroutineScope {
 
     override fun onTileAdded() {
         Log.d(TAG, "onTileAdded()")
-        startTileState()
+        val tile = qsTile ?: return
+        tile.state = Tile.STATE_INACTIVE
+        tile.updateTile()
         setTileLabel()
         super.onTileAdded()
     }
@@ -111,16 +114,12 @@ class StopwatchTile : TileService(), CoroutineScope {
         Log.d(TAG, "setTileLabel(): running = $currentStatus")
         val tile = qsTile ?: return
         when (currentStatus) {
-            is ServiceStatus.Stopped -> { tile.label = getString(R.string.app_name)}
+            is ServiceStatus.Stopped -> {
+                tile.label = getString(R.string.app_name)
+            }
             is ServiceStatus.Paused -> { tile.label = currentStatus.seconds.toFormattedTime()}
             is ServiceStatus.Running -> { tile.label = currentStatus.seconds.toFormattedTime()}
         }
-        tile.updateTile()
-    }
-
-    private fun startTileState() {
-        val tile = qsTile ?: return
-        tile.state = Tile.STATE_INACTIVE
         tile.updateTile()
     }
 
