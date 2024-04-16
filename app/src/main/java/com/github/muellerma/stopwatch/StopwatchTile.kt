@@ -15,7 +15,7 @@ class StopwatchTile : TileService(), CoroutineScope {
     override val coroutineContext = Job()
     private var newMark: Monotonic.ValueTimeMark = Monotonic.markNow()
     private var tapCount: Int = 0
-    private var lastSeconds: Long = 0
+    private var lastSeconds: Long = -1
 
     override fun onClick() {
         Log.d(TAG, "onClick()")
@@ -25,17 +25,12 @@ class StopwatchTile : TileService(), CoroutineScope {
     }
 
     private fun preStopRunning() {
-        val currentStatus = (application as StopwatchApp).lastStatusUpdate
-        Log.d(TAG, "preStopRunning(): currentStatus = $currentStatus")
         when (tapCount) {
-            0 -> {
+            0 -> { //stop running if was running
+                val currentStatus = (application as StopwatchApp).lastStatusUpdate
+                Log.d(TAG, "preStopRunning(): currentStatus = $currentStatus")
                 if (currentStatus is ServiceStatus.Running) {
                     StopwatchService.changeState(applicationContext, PlayFlag.PREPAUSE)
-                }
-            }
-            1 -> {
-                if (currentStatus is ServiceStatus.Running) {
-                    StopwatchService.changeState(applicationContext, PlayFlag.PLAY)
                 }
             }
             else -> {}
@@ -89,7 +84,7 @@ class StopwatchTile : TileService(), CoroutineScope {
                         lastSeconds = currentStatus.seconds
                     }
                     actOnTap()
-                    //reset tap count for next loop
+                    //reset tap count for next loop (after delay to prevent instant restart)
                     delay(TIMERANGE)
                     tapCount = 0
                 }
@@ -111,6 +106,7 @@ class StopwatchTile : TileService(), CoroutineScope {
             if (currentStatus !is ServiceStatus.Stopped) {
                 StopwatchService.changeState(applicationContext, PlayFlag.RESET)
             } else { //reset the subtitle
+                lastSeconds = -1
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     val tile = qsTile ?: return
                     tile.subtitle = null
@@ -128,11 +124,11 @@ class StopwatchTile : TileService(), CoroutineScope {
 
     override fun onTileAdded() {
         Log.d(TAG, "onTileAdded()")
+        super.onTileAdded()
         val tile = qsTile ?: return
         tile.state = Tile.STATE_INACTIVE
         tile.updateTile()
         setTileLabel()
-        super.onTileAdded()
     }
 
     private fun setTileLabel() {
@@ -143,8 +139,12 @@ class StopwatchTile : TileService(), CoroutineScope {
             is ServiceStatus.Stopped -> {
                 tile.label = getString(R.string.app_name)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    val formattedLastSeconds = lastSeconds.toFormattedTime()
-                    tile.subtitle = "Last: $formattedLastSeconds"
+                    if (lastSeconds >= 0) {
+                        val formattedLastSeconds = lastSeconds.toFormattedTime()
+                        tile.subtitle = "Last: $formattedLastSeconds"
+                    } else {
+                        tile.subtitle = null
+                    }
                 }
             }
             is ServiceStatus.Paused -> {
