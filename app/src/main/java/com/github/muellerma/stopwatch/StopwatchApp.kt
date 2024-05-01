@@ -3,7 +3,7 @@ package com.github.muellerma.stopwatch
 import android.app.Application
 
 class StopwatchApp : Application() {
-    var observers = mutableListOf<ServiceStatusObserver>()
+    private var observers = mutableListOf<ServiceStatusObserver>()
     var lastStatusUpdate: ServiceStatus = ServiceStatus.Stopped
         private set
 
@@ -24,7 +24,10 @@ sealed class ServiceStatus {
     class Running(val seconds: Long) : ServiceStatus() {
         override fun toString() = "${Running::class.java.simpleName}($seconds)"
     }
-    object Stopped : ServiceStatus() {
+    class Paused(val seconds: Long): ServiceStatus() {
+        override fun toString() = "${Paused::class.java.simpleName}($seconds)"
+    }
+    data object Stopped : ServiceStatus() {
         override fun toString(): String = Stopped::class.java.simpleName
     }
 }

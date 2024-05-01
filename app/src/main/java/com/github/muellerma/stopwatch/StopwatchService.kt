@@ -7,7 +7,6 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.icu.text.CaseMap.Title
 import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
@@ -16,25 +15,34 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import kotlinx.coroutines.*
-import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration.Companion.seconds
 
 class StopwatchService : Service(), CoroutineScope {
     override val coroutineContext = Job()
     private var wakeLock: PowerManager.WakeLock? = null
     private var stopwatchJob: Job? = null
+    private var lastSeconds: Long = -1
 
     override fun onBind(intent: Intent?): IBinder? = null
 
-    @SuppressLint("WakelockTimeout")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d(TAG, "onStartCommand()")
-
+        Log.d(TAG, "onStartCommand() playFlag = $currentFlag")
         stopwatchJob?.cancel()
+        if (currentFlag == PlayFlag.PLAY) {
+            play()
+        } else if (currentFlag == PlayFlag.PAUSE) {
+            pause()
+        }
+        return START_STICKY
+    }
+
+    @SuppressLint("WakelockTimeout")
+    private fun play() {
         stopwatchJob = launch {
-            (0..Long.MAX_VALUE).forEach { seconds ->
+            (lastSeconds+1..Long.MAX_VALUE).forEach { seconds ->
                 Log.d(TAG, "Running for $seconds seconds")
                 (application as StopwatchApp).notifyObservers(ServiceStatus.Running(seconds))
+                lastSeconds = seconds
                 delay(1.seconds)
             }
         }
@@ -45,8 +53,12 @@ class StopwatchService : Service(), CoroutineScope {
                 "Stopwatch::StopwatchService"
             )
         wakeLock?.acquire()
+    }
 
-        return START_STICKY
+    private fun pause() {
+        Log.d(TAG, "Paused at $lastSeconds seconds")
+        (application as StopwatchApp).notifyObservers(ServiceStatus.Paused(lastSeconds))
+        wakeLock.safeRelease()
     }
 
     override fun onCreate() {
@@ -92,6 +104,7 @@ class StopwatchService : Service(), CoroutineScope {
 
         wakeLock.safeRelease()
         stopwatchJob?.cancel()
+        lastSeconds = -1
         (application as StopwatchApp).notifyObservers(ServiceStatus.Stopped)
     }
 
@@ -99,17 +112,23 @@ class StopwatchService : Service(), CoroutineScope {
         private val TAG = StopwatchService::class.java.simpleName
         const val NOTIFICATION_ID = 1
         const val NOTIFICATION_CHANNEL_ID = "foreground_service"
+        private var currentFlag: PlayFlag = PlayFlag.RESET
 
-        fun changeState(context: Context, start: Boolean) {
-            Log.d(TAG, "changeState($start)")
+        fun changeState(context: Context, flag: PlayFlag) {
+            Log.d(TAG, "changeState($flag)")
             val intent = Intent(context, StopwatchService::class.java)
-            if (start) {
-                ContextCompat.startForegroundService(context, intent)
-            } else {
+            currentFlag = flag
+            if (flag == PlayFlag.RESET) {
                 context.stopService(intent)
+            } else {
+                ContextCompat.startForegroundService(context, intent)
             }
         }
     }
+}
+
+enum class PlayFlag {
+    PREPAUSE, PAUSE, PLAY, RESET
 }
 
 fun PowerManager.WakeLock?.safeRelease() {
