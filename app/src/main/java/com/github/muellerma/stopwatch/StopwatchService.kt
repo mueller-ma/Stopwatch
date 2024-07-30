@@ -7,7 +7,6 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.icu.text.CaseMap.Title
 import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
@@ -15,8 +14,10 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
-import kotlinx.coroutines.*
-import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 class StopwatchService : Service(), CoroutineScope {
@@ -103,6 +104,7 @@ class StopwatchService : Service(), CoroutineScope {
         fun changeState(context: Context, start: Boolean) {
             Log.d(TAG, "changeState($start)")
             val intent = Intent(context, StopwatchService::class.java)
+            intent.`package` = context.packageName
             if (start) {
                 ContextCompat.startForegroundService(context, intent)
             } else {
