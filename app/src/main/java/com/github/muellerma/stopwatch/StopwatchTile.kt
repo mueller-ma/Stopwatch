@@ -2,6 +2,8 @@ package com.github.muellerma.stopwatch
 
 import android.content.ComponentName
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import android.util.Log
@@ -11,6 +13,10 @@ class StopwatchTile : TileService() {
         Log.d(TAG, "onClick()")
         val currentStatus = (application as StopwatchApp).lastStatusUpdate
         StopwatchService.changeState(applicationContext, currentStatus !is ServiceStatus.Running)
+        Handler(Looper.getMainLooper()).postDelayed({
+            Log.d(TAG, "Delaying tile state update for 0.5 seconds")
+            setTileState()
+        }, 500)
     }
 
     override fun onStartListening() {
