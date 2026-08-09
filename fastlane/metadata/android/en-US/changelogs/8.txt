@@ -1,0 +1,1 @@
+Init tile after reboot 
